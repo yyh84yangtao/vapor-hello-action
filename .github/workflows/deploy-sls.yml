@@ -22,6 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
+    # job 运行前添加的环境变量, 部署凭证
+    env:
+      SERVERLESS_PLATFORM_VENDOR: tencent
+      TENCENT_SECRET_ID: ${{ secrets.SECRETID }}
+      TENCENT_SECRET_KEY: ${{ secrets.SECRETKEY }}
+
     # 步骤表示将作为作业的一部分执行的一系列任务
     steps:
 
@@ -55,21 +61,23 @@ jobs:
           npm install -g serverless
           npm install -g @slsplus/cli
 
+      - name: 生成配置文件
+        run: |
+          slsJson=$(cat ./SCF/CustomRuntime/sls.json)
+          # echo $slsJson
+          slsplus parse --output --auto-create --sls-options="$slsJson" && cat serverless.yml
+          
       - name: 部署
         env:
-          SERVERLESS_PLATFORM_VENDOR: tencent
-          TENCENT_SECRET_ID: ${{ secrets.SECRETID }}
-          TENCENT_SECRET_KEY: ${{ secrets.SECRETKEY }}
-          TENCENT_APP_ID: ${{ secrets.APPID }}
           # 应用名称
           APP_NAME: ${{ secrets.APPNAME }}
           # ap-guangzhou
           REGION: ${{ secrets.REGION }}
           # Go1
           RUNTIME: ${{ secrets.RUNTIME }}
+          # 实例名称 Vapor-hello
           INSTANCE_NAME: ${{ secrets.INSTANCENAME }}
         run: |
-          slsplus parse --output --auto-create --sls-options='{"component":"scf","name":"${env:INSTANCE_NAME}","org":"${env:TENCENT_APP_ID}","app":"${env:APP_NAME}","inputs":{"name":"${env:APP_NAME}","region":"${env:REGION}","runtime":"${env:RUNTIME}","type":"web","src":{"src":"./app","exclude":[".env"]},"memorySize":64,"events":[{"apigw":{"parameters":{"serviceName":"vapor_hello_serverless","description":"vapor hello action","endpoints":[{"function":{"isIntegratedResponse":true},"method":"ANY","path":"/"}],"protocols":["http","https"],"environment":"release"}}}]}}' && cat serverless.yml
           sls deploy --force --debug
 
 # END
