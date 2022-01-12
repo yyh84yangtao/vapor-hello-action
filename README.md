@@ -10,6 +10,15 @@ TENCENT_SECRET_ID=xxxxxxxxxx #您账号的 SecretId
 TENCENT_SECRET_KEY=xxxxxxxx #您账号的 SecretKey
 ```
 
+### 配置 `Github secrets` 凭证 
+
+- `APPNAME` 应用名称 `hello`
+- `INSTANCENAME` 实例名称 `hello-action`
+- `REGION` 地域 `ap-guangzhou`
+- `RUNTIME` 运行时 `Go1`
+- `SECRETID` 凭证ID `xxxx`
+- `SECRETKEY` 凭证Key `xxxx`
+
 ## 自动部署
 
 > <https://cloud.tencent.com/document/product/1154/47290>

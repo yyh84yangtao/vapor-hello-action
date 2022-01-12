@@ -1,11 +1,13 @@
 import Vapor
 
 func routes(_ app: Application) throws {
+    
     app.get { req in
-        return "It works!"
+        return "Date:\t\(Date())\nTimeStamp:\t\(Date().timeIntervalSince1970*1000)"
     }
 
     app.get("hello") { req -> String in
-        return "Hello, world!"
+        let remote = req.remoteAddress?.description ?? "world!"
+        return "Hello, \(remote)"
     }
 }
